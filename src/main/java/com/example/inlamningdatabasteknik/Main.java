@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -14,9 +16,9 @@ public class Main {
         Main m = new Main();
         final Repository rep = new Repository();
         final Scanner scan = new Scanner(System.in);
+        AtomicInteger counter = new AtomicInteger(1);
         Kund inloggadKund = null;
         List<Färg> färgLista = rep.färgSetter();
-        färgLista.stream().forEach(b -> System.out.println(b.getFärg()));
         List<Märke> märkeLista = rep.märkeSetter();
         List<Storlek> storlekLista = rep.storlekSetter();
         List<Kategori> kategoriLista = rep.kategoriSetter();
@@ -24,9 +26,9 @@ public class Main {
         List<Kund> kundLista = rep.kundSetter();
         List<Beställning> beställningLista = rep.beställningSetter();
         List<Skor> skorLista = rep.skorSetter();
-        skorLista.stream().forEach(b -> System.out.println(b.getFärgId().getFärg() + b.getId()));
-        //List<SkorBeställningMappning> skorBeställningMappningLista = rep.färgSetter();
+        List<SkorBeställningMappning> skorBeställningMappningLista = rep.skorBeställningMappningSetter();
 
+        //skorLista.stream().forEach(b -> System.out.println(b.getFärgId().getFärg() + b.getId()));
 
         System.out.println("Hej och välkommen!");
 
@@ -44,13 +46,9 @@ public class Main {
 
         //Visa produkter, Märke, Kategori, underkategori, pris, färg, saldo?
         //Sist storlek, saldo?
-        rep.färgSetter();
-        rep.storlekSetter();
-        rep.kategoriSetter();
-        rep.underkategoriSetter();
-        rep.märkeSetter();
-        rep.kundSetter();
-        rep.beställningSetter();
+
+        skorLista.stream().forEach(s  -> System.out.println(counter.getAndIncrement() + " - Märke: " + s.getMärkeId().getMärke() + " Huvudkategori: " + s.getKategoriId().getKategori() +
+                " Kategori" + s.getUnderkategoriId().getUnderkategori() + " Färg: " + s.getFärgId().getFärg() + " Pris: " + s.getPris()));
 
 
         //System.out.println(rep.skoInformation());
