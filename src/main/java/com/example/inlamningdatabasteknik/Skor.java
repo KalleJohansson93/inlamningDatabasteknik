@@ -1,5 +1,7 @@
 package com.example.inlamningdatabasteknik;
 
+import java.util.Objects;
+
 public class Skor {
     private int id;
 
@@ -96,5 +98,18 @@ public class Skor {
                 ", färg=" + färgId.getFärg() +
                 ", underkategori=" + underkategoriId.getUnderkategori() +
                 '\n';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Skor skor = (Skor) o;
+        return id == skor.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

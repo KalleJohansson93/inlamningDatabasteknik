@@ -1,10 +1,7 @@
 package com.example.inlamningdatabasteknik;
 
 import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -19,30 +16,6 @@ public class Repository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public Färg getFärg(String färgInput) {
-        ResultSet rs = null;
-
-        try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
-                p.getProperty("name"),
-                p.getProperty("password"));
-             PreparedStatement stmt = con.prepareStatement("select * from Färg where färg = ?")) {
-
-            stmt.setString(1, färgInput);
-            rs = stmt.executeQuery();
-            Färg färg = null;
-
-            while (rs.next()) {
-                färg = new Färg(rs.getInt("id"), rs.getString("färg"));
-
-            }
-            return färg;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public Kund inloggning(String användarnamn, String lösenord) {
@@ -71,41 +44,7 @@ public class Repository {
         return null;
     }
 
-    public String skoInformation() {
-        ResultSet rs = null;
-
-        try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
-                p.getProperty("name"),
-                p.getProperty("password"));
-             PreparedStatement stmt = con.prepareStatement("select märke.märke, kategori.kategori, underkategori.underkategori, färg.färg, pris from skor\n" +
-                     "inner join märke on skor.märkeid=märke.id\n" +
-                     "inner join kategori on skor.kategoriid=kategori.id\n" +
-                     "inner join underkategori on skor.underkategoriid=underkategori.id\n" +
-                     "inner join färg on skor.färgid=färg.id;")) {
-
-            //stmt.setString(1, användarnamn);
-            //stmt.setString(2, lösenord);
-            rs = stmt.executeQuery();
-            String sko = "";
-            Färg färg;
-
-
-            while (rs.next()) {
-                färg = new Färg(1, rs.getString("färg"));
-                sko = "Märke: " + rs.getString("märke") + " Katetgori: " + rs.getString("kategori") + rs.getString("underkategori") +
-                        rs.getString("färg") + rs.getInt("pris");
-                System.out.println(sko);
-                System.out.println(färg.getFärg());
-            }
-            return sko;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public List<Färg> färgSetter() {
+/*    public List<Färg> färgSetter() {
         ResultSet rs = null;
 
         try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
@@ -218,7 +157,7 @@ public class Repository {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     public List<Kund> kundSetter() {
         ResultSet rs = null;
@@ -417,8 +356,43 @@ public class Repository {
     }
 
 
+    public String läggTillSkorTillBeställning(int kundId, int beställningsId,int skoId){
+        //ResultSet rs = null;
 
-    public List<Skor> skorLista() {
+        try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
+                p.getProperty("name"),
+                p.getProperty("password"));
+             CallableStatement stmt = con.prepareCall("call addToCart(?,?,?)")) {
+
+            stmt.setInt(1, kundId);
+            stmt.setInt(2, beställningsId);
+            stmt.setInt(3, skoId);
+            stmt.execute();
+
+            return "Sko tillagd i beställningen";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Kunde inte lägga till skon i beställningen" + e.getMessage();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*public List<Skor> skorLista() {
         ResultSet rs = null;
 
         try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
@@ -466,7 +440,7 @@ public class Repository {
             Storlek storlek = null;
 
             while (rs.next()) {
-                storlek = new Storlek(rs.getInt("id"), rs.getInt("storlek"));
+                //storlek = new Storlek(rs.getInt("id"), rs.getInt("storlek"));
             }
             return storlek;
         } catch (Exception e) {
@@ -495,6 +469,6 @@ public class Repository {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 }
