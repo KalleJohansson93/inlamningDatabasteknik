@@ -1,9 +1,9 @@
 package com.example.inlamningdatabasteknik;
 
 public class Underkategori {
-    private int id;
+    private final int id;
 
-    private String underkategori;
+    private final String underkategori;
 
     public Underkategori(int id, String underkategori) {
         this.id = id;
@@ -14,15 +14,7 @@ public class Underkategori {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getUnderkategori() {
         return underkategori;
-    }
-
-    public void setUnderkategori(String underkategori) {
-        this.underkategori = underkategori;
     }
 }

@@ -18,13 +18,12 @@ public class Main {
     final List<Skor> skorLista = rep.skorSetter();
     final List<SkorBeställningMappning> skorBeställningMappningLista = rep.skorBeställningMappningSetter();
 
-
     public void logIn() {
         while (inloggadKund == null) {
             System.out.println("Fyll i användarnamn: ");
-            String username = scan.nextLine();
+            final String username = scan.nextLine();
             System.out.println("Lösenord: ");
-            String password = scan.nextLine();
+            final String password = scan.nextLine();
             inloggadKund = rep.inloggning(username, password);
             if (inloggadKund == null) {
                 System.out.println("Fel användarnamn eller lösenord");
@@ -45,6 +44,7 @@ public class Main {
             System.out.println("2 - Antal ordrar per kund");
             System.out.println("3 - Totalt köpbelopp per kund");
             System.out.println("4 - Totalt bestälningsvärde per ort");
+            System.out.println("5 - Topplista mest sålda skorna");
 
             userinput = scan.nextLine();
 
@@ -65,6 +65,10 @@ public class Main {
                     printBeställningsvärdePerOrt();
                     inputCheck = true;
                     break;
+                case "5":
+                    printTopplistaMestSålda();
+                    inputCheck = true;
+                    break;
                 default:
                     System.out.println("Ogiltigt val, försök igen");
             }
@@ -72,10 +76,10 @@ public class Main {
     }
 
     public void printKunderEfterSöktaAttribut() {
-        SkoFilterInterface färgSök = (skor, sökord) -> skor.getFärgId().getFärg().equalsIgnoreCase(sökord);
-        SkoFilterInterface märkeSök = (skor, sökord) -> skor.getMärkeId().getMärke().equalsIgnoreCase(sökord);
-        SkoFilterInterface storlekSök = (skor, sökord) -> {
-            int storlek = skor.getStorlekId().getStorlek();
+        final SkoFilterInterface färgSök = (skor, sökord) -> skor.getFärgId().getFärg().equalsIgnoreCase(sökord);
+        final SkoFilterInterface märkeSök = (skor, sökord) -> skor.getMärkeId().getMärke().equalsIgnoreCase(sökord);
+        final SkoFilterInterface storlekSök = (skor, sökord) -> {
+            final int storlek = skor.getStorlekId().getStorlek();
             return Integer.toString(storlek).equals(sökord);
         };
 
@@ -102,23 +106,24 @@ public class Main {
 
     public void printKunderMedMatchandeSkor(String sökOrd, SkoFilterInterface sfi) {
         // Filtrera skor efter valt filter
-        List<Skor> skorHittade = skorLista.stream()
+        final List<Skor> skorHittade = skorLista.stream()
                 .filter(c -> sfi.filter(c, sökOrd))
                 .collect(Collectors.toList());
 
         // Hitta relevanta beställningar genom skorBeställningMappningLista för att sen kunna hitta kund
-        List<Beställning> relevantBeställningar = skorBeställningMappningLista.stream()
+        final List<Beställning> relevantBeställningar = skorBeställningMappningLista.stream()
                 .filter(mappning -> skorHittade.contains(mappning.getSkor()))
                 .map(SkorBeställningMappning::getBeställning)
                 .collect(Collectors.toList());
 
         // Hitta rätt kunder
-        List<Kund> kunder = relevantBeställningar.stream()
+        final List<Kund> kunder = relevantBeställningar.stream()
                 .map(beställning -> beställning.getKund())
                 .distinct()
                 .collect(Collectors.toList());
 
         // Skriv ut
+        System.out.println("Kunder hittade baserat på följande sökord över skomodeller: " + sökOrd);
         kunder.forEach(kund -> {
             System.out.println("Kund: " + kund.getFornamn() + " " + kund.getEfternamn() +
                     ", Ort: " + kund.getOrt());
@@ -128,79 +133,21 @@ public class Main {
         }
     }
 
-   /* public void visaSkomodeller() {
-        // Mappar ihop skor efter olika attribut
-        Map<String, List<Skor>> groupedSkor = skorLista.stream()
-                .collect(Collectors.groupingBy(skor -> skor.getMärkeId().getMärke() + " - " +
-                        skor.getKategoriId().getKategori() + " - " +
-                        skor.getUnderkategoriId().getUnderkategori() + " - " +
-                        skor.getFärgId().getFärg() + " - " +
-                        "Pris: " + skor.getPris()));
-
-        AtomicInteger counter = new AtomicInteger(1);
-        Map<Integer, String> indexToGroupMap = new HashMap<>();
-
-        // Displaying the grouped Skor
-        groupedSkor.forEach((key, value) -> {
-            System.out.println(counter.get() + " - " + key + " - Finns i: " + value.size() + " storlekar");
-            indexToGroupMap.put(counter.getAndIncrement(), key);
-        });
-
-        // Step 2: Let the user choose a group to see sizes
-        chooseGroupForSizes(indexToGroupMap, groupedSkor);
-    }
-
-    private void chooseGroupForSizes(Map<Integer, String> indexToGroupMap, Map<String, List<Skor>> groupedSkor) {
-        System.out.println("Välj nummer för att se tillgängliga storlekar av modellen: ");
-        int choice = scan.nextInt();
-
-        String chosenGroupKey = indexToGroupMap.get(choice);
-        if (chosenGroupKey != null) {
-            List<Skor> chosenSkorList = groupedSkor.get(chosenGroupKey);
-            displaySizesForChosenSkor(chosenSkorList);
-        } else {
-            System.out.println("Ogiltigt val.");
-        }
-    }
-
-    private void displaySizesForChosenSkor(List<Skor> chosenSkorList) {
-        System.out.println("Tillgängliga storlekar för vald skomodel:");
-        chosenSkorList.forEach(skor -> System.out.println(skor.getStorlekId().getStorlek()));
-
-        System.out.println("Välj storlek: ");
-
-        while (!scan.hasNextInt()) {
-            System.out.println("Ange en giltig storlek");
-            scan.next();
-        }
-        int valdStorlek = scan.nextInt();
-
-        Optional <Skor> valdsko = chosenSkorList.stream().filter(s -> s.getStorlekId().getStorlek() == valdStorlek).findFirst();
-
-        if (valdsko.isPresent()){
-            valdskor = valdsko.get();
-            rep.läggTillSkorTillBeställning(inloggadKund.getId(), 0, valdskor.getId());
-            System.out.println(valdskor.getMärkeId().getMärke() + " i storlek " + valdskor.getStorlekId().getStorlek() + " lades till");
-        } else {
-            System.out.println("Ingen sko i den storleken hittades");
-        }
-    }*/
-
     public void visaSkomodeller() {
         // Mappar ihop skor efter olika attribut
-        Map<String, List<Skor>> Skor = skorLista.stream()
+        final Map<String, List<Skor>> Skor = skorLista.stream()
                 .collect(Collectors.groupingBy(skor -> skor.getMärkeId().getMärke() + " - " +
                         skor.getKategoriId().getKategori() + " - " +
                         skor.getUnderkategoriId().getUnderkategori() + " - " +
                         skor.getFärgId().getFärg() + " - " +
                         "Pris: " + skor.getPris()));
 
-        List<String> Nycklar = new ArrayList<>(Skor.keySet());
+        final List<String> Nycklar = new ArrayList<>(Skor.keySet());
 
         // Visar upp skomodeller
         for (int i = 0; i < Nycklar.size(); i++) {
             String Nyckel = Nycklar.get(i);
-            System.out.println((i + 1) + " - " + Nyckel); // + " - Finns i: " + Skor.get(Nyckel).size() + " storlekar");
+            System.out.println((i + 1) + " - " + Nyckel);
         }
 
         väljSkomodel(Nycklar, Skor);
@@ -208,7 +155,7 @@ public class Main {
 
     private void väljSkomodel(List<String> nycklar, Map<String, List<Skor>> skor) {
         System.out.println("Välj nummer för att se tillgängliga storlekar av modellen: ");
-        int userInput = scan.nextInt() - 1;
+        final int userInput = scan.nextInt() - 1;
 
         if (userInput >= 0 && userInput < nycklar.size()) {
             String valdSkomodell = nycklar.get(userInput);
@@ -231,25 +178,44 @@ public class Main {
         }
         int valdStorlek = scan.nextInt();
 
-        Optional <Skor> valdsko = valdaSkoLista.stream().filter(s -> s.getStorlekId().getStorlek() == valdStorlek).findFirst();
+        final Optional <Skor> valdsko = valdaSkoLista.stream().filter(s -> s.getStorlekId().getStorlek() == valdStorlek).findFirst();
 
         if (valdsko.isPresent()){
             valdskor = valdsko.get();
-            rep.läggTillSkorTillBeställning(inloggadKund.getId(), 0, valdskor.getId());
-            System.out.println(valdskor.getMärkeId().getMärke() + " i storlek " + valdskor.getStorlekId().getStorlek() + " lades till");
+            System.out.println("Du har valt " + valdskor.getMärkeId().getMärke() + " i storlek " + valdskor.getStorlekId().getStorlek());
+            System.out.println(rep.läggTillSkorTillBeställning(inloggadKund.getId(), 0, valdskor.getId())); //Ändra kundid här för SQLException 1452
         } else {
             System.out.println("Ingen sko i den storleken hittades");
         }
     }
 
+    public void printTopplistaMestSålda () {
+
+        final Map<Skor, Integer> mestSåldaSkor = skorBeställningMappningLista.stream()
+                .collect(Collectors.groupingBy(skor -> skor.getSkor(),
+                        Collectors.summingInt(skor -> skor.getAntalSkor())));
+
+        final List<Map.Entry<Skor, Integer>> mestSåldaSkorSorterade = mestSåldaSkor.entrySet().stream()
+                .sorted(Map.Entry.<Skor, Integer>comparingByValue().reversed())
+                .toList();
+
+        System.out.println("Toppsäljare:");
+        mestSåldaSkorSorterade.forEach(sko -> {
+            Skor skor = sko.getKey();
+            Integer antal = sko.getValue();
+            System.out.println(skor.getMärkeId().getMärke() + " - Kategori: " + skor.getUnderkategoriId().getUnderkategori() +  ", Färg: " +
+                    skor.getFärgId().getFärg() + ", Storlek: " + skor.getStorlekId().getStorlek() + ", Antal sålda: " + antal);
+        });
+    }
+
     public void printKunderOchDerasTotalaKöpbelopp() {
         // Mappar ihop beställning med ett uträknat totalbelopp
-        Map<Beställning, Double> beställningTotalbelopp = skorBeställningMappningLista.stream()
+        final Map<Beställning, Double> beställningTotalbelopp = skorBeställningMappningLista.stream()
                 .collect(Collectors.groupingBy(b -> b.getBeställning(),
                         Collectors.summingDouble(mappning -> mappning.getSkor().getPris() * mappning.getAntalSkor())));
 
         // Mappar ihop kunder med deras totalbelopp och beställningar
-        Map<Kund, Double> spenderatPerKund = beställningTotalbelopp.entrySet().stream()
+        final Map<Kund, Double> spenderatPerKund = beställningTotalbelopp.entrySet().stream()
                 .collect(Collectors.groupingBy(e -> e.getKey().getKund(),
                         Collectors.summingDouble(e -> e.getValue())));
 
@@ -263,12 +229,12 @@ public class Main {
 
     public void printBeställningsvärdePerOrt() {
         //Mappar ihop beställningar med deras uträknade totalbelopp
-        Map<Beställning, Double> beställningTotalbelopp = skorBeställningMappningLista.stream()
+        final Map<Beställning, Double> beställningTotalbelopp = skorBeställningMappningLista.stream()
                 .collect(Collectors.groupingBy(b -> b.getBeställning(),
                         Collectors.summingDouble(mappning -> mappning.getSkor().getPris() * mappning.getAntalSkor())));
 
         // Mappar ihop orter med totalbeloppen
-        Map<String, Double> spenderatPerOrt = beställningTotalbelopp.entrySet().stream()
+        final Map<String, Double> spenderatPerOrt = beställningTotalbelopp.entrySet().stream()
                 .collect(Collectors.groupingBy(e -> e.getKey().getKund().getOrt(),
                         Collectors.summingDouble(Map.Entry::getValue)));
 
@@ -280,7 +246,7 @@ public class Main {
 
     public void printAntalOrdrarPerKund() {
         // Mappar kunder ihop med antal beställningar
-        Map<Kund, Long> kundersAntalBeställningar = beställningLista.stream()
+        final Map<Kund, Long> kundersAntalBeställningar = beställningLista.stream()
                 .collect(Collectors.groupingBy(Beställning::getKund, Collectors.counting()));
 
         // Skriver ut alla kunder inklusive dom utan beställningar

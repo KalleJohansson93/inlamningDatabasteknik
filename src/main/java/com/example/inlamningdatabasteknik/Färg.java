@@ -1,9 +1,9 @@
 package com.example.inlamningdatabasteknik;
 
 public class Färg {
-    private int id;
+    private final int id;
 
-    private String färg;
+    private final String färg;
 
     public Färg(int id, String färg) {
         this.id = id;
@@ -14,15 +14,7 @@ public class Färg {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getFärg() {
         return färg;
-    }
-
-    public void setFärg(String färg) {
-        this.färg = färg;
     }
 }

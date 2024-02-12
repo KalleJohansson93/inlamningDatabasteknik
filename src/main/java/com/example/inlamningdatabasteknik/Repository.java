@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class Repository {
 
-    private Properties p = new Properties();
+    private final Properties p = new Properties();
 
     public Repository() {
         try {
@@ -158,6 +158,8 @@ public class Repository {
         }
         return null;
     }*/
+
+
 
     public List<Kund> kundSetter() {
         ResultSet rs = null;
@@ -329,7 +331,6 @@ public class Repository {
         return null;
     }
 
-
     public Beställning getBeställningById(int id) {
         ResultSet rs = null;
 
@@ -355,9 +356,7 @@ public class Repository {
         return null;
     }
 
-
     public String läggTillSkorTillBeställning(int kundId, int beställningsId,int skoId){
-        //ResultSet rs = null;
 
         try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
                 p.getProperty("name"),
@@ -369,106 +368,9 @@ public class Repository {
             stmt.setInt(3, skoId);
             stmt.execute();
 
-            return "Sko tillagd i beställningen";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Kunde inte lägga till skon i beställningen" + e.getMessage();
+            return "Beställning mottagen";
+        } catch (SQLException s) {
+            return "Kunde inte lägga till skon i beställningen. " + s.getMessage();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*public List<Skor> skorLista() {
-        ResultSet rs = null;
-
-        try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
-                p.getProperty("name"),
-                p.getProperty("password"));
-             PreparedStatement stmt = con.prepareStatement("SELECT skor.*, kategori.kategori AS kategoriNamn, märke.märke AS märkeNamn, storlek.storlek AS storlekStorlek, färg.färg AS färgNamn, underkategori.underkategori AS underkategoriNamn\n" +
-                     "                 FROM skor \n" +
-                     "                 INNER JOIN kategori ON skor.kategoriid = kategori.id \n" +
-                     "                 INNER JOIN märke ON skor.märkeid = märke.id \n" +
-                     "                 INNER JOIN storlek ON skor.storlekid = storlek.id \n" +
-                     "                 INNER JOIN färg ON skor.färgid = färg.id \n" +
-                     "                 INNER JOIN underkategori ON skor.underkategoriid = underkategori.id;")) {
-
-            rs = stmt.executeQuery();
-            Skor skor;
-            List<Skor> skoLista = new ArrayList<>();
-
-            while (rs.next()) {
-                Storlek storlek = new Storlek(rs.getInt("storlekid"), rs.getInt("storlekStorlek"));
-                Märke märke = new Märke(rs.getInt("märkeid"), rs.getString("märkeNamn"));
-                Kategori kategori = new Kategori(rs.getInt("kategoriid"), rs.getString("kategoriNamn"));
-                Färg färg = new Färg(rs.getInt("färgid"), rs.getString("färgNamn"));
-                Underkategori underkategori = new Underkategori(rs.getInt("underkategoriid"), rs.getString("underkategoriNamn"));
-                skor = new Skor(rs.getInt("id"), rs.getInt("pris"), rs.getInt("saldo"),
-                        storlek, märke, kategori, färg, underkategori);
-                skoLista.add(skor);
-            }
-            return skoLista;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Storlek getStorlekById(int id) {
-        ResultSet rs = null;
-
-        try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
-                p.getProperty("name"),
-                p.getProperty("password"));
-             PreparedStatement stmt = con.prepareStatement("select * from storlek where id = ?;")) {
-
-            stmt.setInt(1, id);
-            rs = stmt.executeQuery();
-            Storlek storlek = null;
-
-            while (rs.next()) {
-                //storlek = new Storlek(rs.getInt("id"), rs.getInt("storlek"));
-            }
-            return storlek;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Märke getMärkeById(int id) {
-        ResultSet rs = null;
-
-        try (Connection con = DriverManager.getConnection(p.getProperty("connectionString"),
-                p.getProperty("name"),
-                p.getProperty("password"));
-             PreparedStatement stmt = con.prepareStatement("select * from märke where id = ?;")) {
-
-            stmt.setInt(1, id);
-            rs = stmt.executeQuery();
-            Märke märke = null;
-
-            while (rs.next()) {
-                märke = new Märke(rs.getInt("id"), rs.getString("märke"));
-            }
-            return märke;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
-
 }

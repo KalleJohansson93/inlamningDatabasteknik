@@ -3,15 +3,14 @@ package com.example.inlamningdatabasteknik;
 import java.util.Objects;
 
 public class Skor {
-    private int id;
-
-    private int pris;
-    private int saldo;
-    private Storlek storlekId;
-    private Märke märkeId;
-    private Kategori kategoriId;
-    private Färg färgId;
-    private Underkategori underkategoriId;
+    private final int id;
+    private final  int pris;
+    private final int saldo;
+    private final Storlek storlekId;
+    private final Märke märkeId;
+    private final Kategori kategoriId;
+    private final Färg färgId;
+    private final Underkategori underkategoriId;
 
     public Skor(int id, int pris, int saldo, Storlek storlekId, Märke märkeId, Kategori kategoriId, Färg färgId, Underkategori underkategoriId) {
         this.id = id;
@@ -28,64 +27,32 @@ public class Skor {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getPris() {
         return pris;
-    }
-
-    public void setPris(int pris) {
-        this.pris = pris;
     }
 
     public int getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(int saldo) {
-        this.saldo = saldo;
-    }
-
     public Storlek getStorlekId() {
         return storlekId;
-    }
-
-    public void setStorlekId(Storlek storlekId) {
-        this.storlekId = storlekId;
     }
 
     public Märke getMärkeId() {
         return märkeId;
     }
 
-    public void setMärkeId(Märke märkeId) {
-        this.märkeId = märkeId;
-    }
-
     public Kategori getKategoriId() {
         return kategoriId;
-    }
-
-    public void setKategoriId(Kategori kategoriId) {
-        this.kategoriId = kategoriId;
     }
 
     public Färg getFärgId() {
         return färgId;
     }
 
-    public void setFärgId(Färg färgId) {
-        this.färgId = färgId;
-    }
-
     public Underkategori getUnderkategoriId() {
         return underkategoriId;
-    }
-
-    public void setUnderkategoriId(Underkategori underkategoriId) {
-        this.underkategoriId = underkategoriId;
     }
 
     @Override

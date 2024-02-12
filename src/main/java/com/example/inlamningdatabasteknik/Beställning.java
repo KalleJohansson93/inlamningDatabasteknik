@@ -1,10 +1,10 @@
 package com.example.inlamningdatabasteknik;
 
 public class Beställning {
-    private int id;
-    private Kund kund;
-    private String datum;
-    private boolean betalad;
+    private final int id;
+    private final Kund kund;
+    private final String datum;
+    private final boolean betalad;
 
     public Beställning(int id, Kund kund, String datum, boolean betalad) {
         this.id = id;
@@ -17,31 +17,18 @@ public class Beställning {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Kund getKund() {
         return kund;
-    }
-
-    public void setKund(Kund kund) {
-        this.kund = kund;
     }
 
     public String getDatum() {
         return datum;
     }
 
-    public void setDatum(String datum) {
-        this.datum = datum;
-    }
 
     public boolean isBetalad() {
         return betalad;
     }
 
-    public void setBetalad(boolean betalad) {
-        this.betalad = betalad;
-    }
 }

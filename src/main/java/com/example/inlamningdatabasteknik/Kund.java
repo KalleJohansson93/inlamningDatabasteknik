@@ -3,12 +3,12 @@ package com.example.inlamningdatabasteknik;
 import java.util.Objects;
 
 public class Kund {
-    private int id;
-    private String fornamn;
-    private String efternamn;
-    private String ort;
-    private String användarnamn;
-    private String lösenord;
+    private final int id;
+    private final String fornamn;
+    private final String efternamn;
+    private final String ort;
+    private final String användarnamn;
+    private final String lösenord;
 
     public Kund(int id, String fornamn, String efternamn, String ort, String användarnamn, String lösenord) {
         this.id = id;
@@ -23,48 +23,28 @@ public class Kund {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getFornamn() {
         return fornamn;
     }
 
-    public void setFornamn(String fornamn) {
-        this.fornamn = fornamn;
-    }
 
     public String getEfternamn() {
         return efternamn;
     }
 
-    public void setEfternamn(String efternamn) {
-        this.efternamn = efternamn;
-    }
 
     public String getOrt() {
         return ort;
     }
 
-    public void setOrt(String ort) {
-        this.ort = ort;
-    }
 
     public String getAnvändarnamn() {
         return användarnamn;
     }
 
-    public void setAnvändarnamn(String användarnamn) {
-        this.användarnamn = användarnamn;
-    }
-
     public String getLösenord() {
         return lösenord;
-    }
-
-    public void setLösenord(String lösenord) {
-        this.lösenord = lösenord;
     }
 
     @Override

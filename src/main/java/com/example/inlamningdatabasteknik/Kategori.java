@@ -1,9 +1,9 @@
 package com.example.inlamningdatabasteknik;
 
 public class Kategori {
-    private int id;
+    private final int id;
 
-    private String kategori;
+    private final String kategori;
 
     public Kategori(int id, String kategori) {
         this.id = id;
@@ -14,15 +14,8 @@ public class Kategori {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getKategori() {
         return kategori;
     }
 
-    public void setKategori(String kategori) {
-        this.kategori = kategori;
-    }
 }
