@@ -8,11 +8,6 @@ public class Main {
     Skor valdskor;
     final Repository rep = new Repository();
     final Scanner scan = new Scanner(System.in);
-    //List<Färg> färgLista = rep.färgSetter();
-    //List<Märke> märkeLista = rep.märkeSetter();
-    //List<Storlek> storlekLista = rep.storlekSetter();
-    //List<Kategori> kategoriLista = rep.kategoriSetter();
-    //List<Underkategori> underkategoriLista = rep.underkategoriSetter();
     final List<Kund> kundLista = rep.kundSetter();
     final List<Beställning> beställningLista = rep.beställningSetter();
     final List<Skor> skorLista = rep.skorSetter();
@@ -183,7 +178,7 @@ public class Main {
         if (valdsko.isPresent()){
             valdskor = valdsko.get();
             System.out.println("Du har valt " + valdskor.getMärkeId().getMärke() + " i storlek " + valdskor.getStorlekId().getStorlek());
-            System.out.println(rep.läggTillSkorTillBeställning(inloggadKund.getId(), 0, valdskor.getId())); //Ändra kundid här för SQLException 1452
+            System.out.println(rep.läggTillSkorTillBeställning(888, 0, valdskor.getId())); //Ändra kundid här för SQLException 1452
         } else {
             System.out.println("Ingen sko i den storleken hittades");
         }
